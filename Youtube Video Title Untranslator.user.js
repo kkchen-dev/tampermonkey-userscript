@@ -5,7 +5,6 @@
 // @description  Translate the auto-translated Youtube video titles back to original languages
 // @author       Kevin Chen
 // @match        https://www.youtube.com/watch?v=*
-// @grant        none
 // ==/UserScript==
 
 (function() {
