@@ -1,2 +1,2 @@
 # tampermonkey-userscript
-Collection of tampermonkey user scripts, i.e. Youtube video title untranslator.
+Collection of Tampermonkey User Scripts, i.e. Youtube Video Title Untranslator.
