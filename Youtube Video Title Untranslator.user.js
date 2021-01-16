@@ -14,7 +14,9 @@
     var checkExist = setInterval(function() {
         if (translatedTitleContainers.length) {
             let translatedElement = translatedTitleContainers[0].getElementsByTagName('yt-formatted-string')[0];
-            translatedElement.innerHTML = `${originalTitle} (${translatedElement.innerHTML})`
+            if (translatedElement.innerHTML !== originalTitle) {
+                translatedElement.innerHTML = `${originalTitle} (${translatedElement.innerHTML})`
+            }
             clearInterval(checkExist);
         }
     }, 100);
