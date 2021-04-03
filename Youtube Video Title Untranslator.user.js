@@ -9,19 +9,33 @@
 
 (function() {
     'use strict';
-    var checkExist = setInterval(function() {
-        let originalTitle = document.getElementsByTagName('title')[0].innerHTML;
-        if (originalTitle !== 'YouTube') {
-            originalTitle = originalTitle.replace(' - YouTube', '');
-            let translatedTitleContainers = document.getElementsByClassName('title ytd-video-primary-info-renderer');
-            if (translatedTitleContainers.length) {
-                let translatedElement = translatedTitleContainers[0].getElementsByTagName('yt-formatted-string')[0];
-                if (translatedElement.innerHTML !== originalTitle) {
-                    translatedElement.innerHTML = `${originalTitle} (${translatedElement.innerHTML})`;
+    let persistedTab = '';
+    let setTitleLoop = setInterval(setTitle, 100);
+    function setTitle() {
+        let originalTitleContainers = document.getElementsByClassName('ytp-title-text');
+        let translatedTitleContainers = document.getElementsByClassName('title ytd-video-primary-info-renderer');
+        if (elementExists(originalTitleContainers)
+                && elementExists(translatedTitleContainers)
+                && elementExists(translatedTitleContainers[0].getElementsByTagName('yt-formatted-string'))) {
+            let originalTitle = originalTitleContainers[0].innerText;
+            let translatedElement = translatedTitleContainers[0].getElementsByTagName('yt-formatted-string')[0];
+            let translatedText = translatedElement.innerText;
+
+            if (elementExists(translatedElement.getElementsByTagName('span')) || originalTitle !== persistedTab) {
+                if (elementExists(translatedElement.getElementsByTagName('span'))) {
+                    translatedText = translatedElement.getElementsByTagName('span')[0].innerText;
                 }
-                clearInterval(checkExist);
+                if (translatedText !== originalTitle) {
+                    translatedElement.innerText = `${originalTitle} (${translatedText})`;
+                }
+                else {
+                    translatedElement.innerText = originalTitle;
+                }
+                persistedTab = originalTitle;
             }
         }
-    }, 100);
-    setTimeout(clearInterval, 1000, checkExist);
+    }
+    function elementExists(element) {
+        return !!element && !!element[0]
+    }
 })();
