@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Video Title Untranslator
 // @namespace    https://github.com/kkchen-dev/tampermonkey-userscript
-// @version      0.2
+// @version      0.3
 // @description  Translate the auto-translated Youtube video titles back to original languages
 // @author       Kevin Chen
 // @match        https://*.youtube.com/*
@@ -25,11 +25,13 @@
                 if (elementExists(translatedElement.getElementsByTagName('span'))) {
                     translatedText = translatedElement.getElementsByTagName('span')[0].innerText;
                 }
-                if (translatedText !== originalTitle) {
-                    translatedElement.innerText = `${originalTitle} (${translatedText})`;
-                }
-                else {
-                    translatedElement.innerText = originalTitle;
+                if (originalTitle) {
+                    if (translatedText && translatedText !== originalTitle) {
+                        translatedElement.innerText = `${originalTitle} (${translatedText})`;
+                    }
+                    else {
+                        translatedElement.innerText = originalTitle;
+                    }
                 }
                 persistedTab = originalTitle;
             }
