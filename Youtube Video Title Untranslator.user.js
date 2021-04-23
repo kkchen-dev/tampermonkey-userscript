@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Video Title Untranslator
 // @namespace    https://github.com/kkchen-dev/tampermonkey-userscript
-// @version      0.4
+// @version      0.5
 // @description  Translate the auto-translated Youtube video titles back to original languages
 // @author       Kevin Chen
 // @match        https://*.youtube.com/*
@@ -9,36 +9,18 @@
 
 (function() {
     'use strict';
-    let persistedTab = '';
-    let setTitleLoop = setInterval(setTitle, 100);
+    let persistedId = '';
+    setInterval(setTitle, 10);
+
     function setTitle() {
-        let originalTitleContainers = document.getElementsByClassName('ytp-title-text');
-        let translatedTitleContainers = document.getElementsByClassName('title ytd-video-primary-info-renderer');
+        let originalTitle = document.getElementsByClassName('ytp-title-text')?.[0]?.innerText;
+        let translatedTitle = JSON.parse(document.getElementById('scriptTag')?.innerText ?? "{}")?.name;
+        let displayedElement = document.getElementsByClassName('title ytd-video-primary-info-renderer')?.[0]?.getElementsByTagName('yt-formatted-string')?.[0];
+        let currentId = document.getElementsByTagName('ytd-watch-flexy')?.[0]?.getAttribute('video-id');
 
-        if (!originalTitleContainers?.[0] || !translatedTitleContainers?.[0]?.getElementsByTagName('yt-formatted-string')?.[0]) {
-            return
+        if (persistedId !== currentId && displayedElement && originalTitle && translatedTitle) {
+            persistedId = currentId;
+            displayedElement.innerText = (originalTitle === translatedTitle) ? originalTitle : `${originalTitle} (${translatedTitle})`;
         }
-
-        let translatedElement = translatedTitleContainers[0].getElementsByTagName('yt-formatted-string')[0];
-        let originalTitle = originalTitleContainers[0].innerText;
-        if (!translatedElement.getElementsByTagName('span')?.[0] && originalTitle === persistedTab) {
-            return
-        }
-
-        let translatedText = translatedElement.innerText;
-        if (translatedElement.getElementsByTagName('span')?.[0]) {
-            translatedText = translatedElement.getElementsByTagName('span')[0].innerText;
-        }
-
-        if (originalTitle) {
-            if (translatedText && translatedText !== originalTitle) {
-                translatedElement.innerText = `${originalTitle} (${translatedText})`;
-            }
-            else {
-                translatedElement.innerText = originalTitle;
-            }
-        }
-
-        persistedTab = originalTitle;
     }
 })();
