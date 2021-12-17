@@ -13,6 +13,9 @@
     setInterval(setTitle, 10);
 
     function setTitle() {
+        let titleText = document.getElementsByTagName("title")[0].innerText;
+        let trimmedTitle = titleText.substring(0, titleText.lastIndexOf('-')).trim();
+
         let originalTitle = document.getElementsByClassName('ytp-title-text')?.[0]?.innerText;
         let translatedTitle = JSON.parse(document.getElementById('scriptTag')?.innerText ?? "{}")?.name;
         let displayedElementContainer = document.getElementsByClassName('title ytd-video-primary-info-renderer')?.[0];
@@ -21,6 +24,10 @@
 
         if (persistedId !== currentId && displayedElement && originalTitle && translatedTitle) {
             persistedId = currentId;
+            if (originalTitle === translatedTitle && trimmedTitle)
+            {
+                originalTitle = trimmedTitle;
+            }
             if (originalTitle !== translatedTitle)
             {
                 let node = document.createElement("yt-formatted-string");
